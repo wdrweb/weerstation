@@ -1,0 +1,22 @@
+# Python venv (per-machine, never commit)
+/.venv/
+
+# West-managed sources (recreated by `west update`, several GB)
+/external/
+
+# Build output (any app, any board)
+**/build*/
+
+# VS Code machine-specific files — copy the .example versions instead
+.vscode/launch.json
+.vscode/zephyr-ide.json
+.vscode/settings.json
+.vscode/compile_commands.json
+.vscode/c_cpp_properties.json
+
+# Backups and editor noise
+*.bak
+*.orig
+*~
+.DS_Store
+Thumbs.db

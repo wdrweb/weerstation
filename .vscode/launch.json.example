@@ -1,0 +1,39 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Zephyr IDE West: Debug",
+            "type": "zephyr-ide-west",
+            "request": "launch",
+            "runner": "openocd",
+            "runToEntryPoint": "main",
+            "preLaunchCommands": [
+                "set breakpoint auto-hw on",
+                "mem 0x42000000 0x42800000 ro",
+                "mem 0x40800000 0x40880000 rw",
+                "mem 0x60000000 0x60100000 rw",
+                "monitor reset halt",
+                "monitor esp appimage_offset 0",
+                "maintenance flush register-cache"
+            ],
+            "rtos": "Zephyr",
+            "showDevDebugOutput": "raw",
+            "loadFiles": [],
+            "svdFile": "ABSOLUTE_PATH_TO/esp32c6.svd"
+        },
+        {
+            "name": "Zephyr IDE West: Attach",
+            "type": "zephyr-ide-west",
+            "request": "attach",
+            "runner": "openocd",
+            "rtos": "Zephyr",
+            "showDevDebugOutput": "raw",
+            "svdFile": "ABSOLUTE_PATH_TO/esp32c6.svd"
+        },
+        {
+            "name": "Zephyr IDE: Debug (west debugserver)",
+            "type": "zephyr-ide-west",
+            "request": "launch"
+        }
+    ]
+}
