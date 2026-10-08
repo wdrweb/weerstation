@@ -37,7 +37,6 @@ int main(void)
 		float humidity = read_sensor(sensorth, SENSOR_CHAN_HUMIDITY);
 		float temp2 = read_sensor(sensorth, SENSOR_CHAN_AMBIENT_TEMP);
 		float average_temp = (temperature + temp2) / 2.0;
-		// console log
 		printk("average temperature: %f\n", average_temp);
 		printk("pressure: %f\n", pressure);
 		printk("humidity: %f\n", humidity);
