@@ -5,4 +5,12 @@
 config SAMPLE_DO_OUTPUT
 	bool "Do print from the main thread which can be checked"
 
+config WIFI_SSID
+	string "Wi-Fi SSID"
+	default "myssid"
+
+config WIFI_PSK
+	string "Wi-Fi password"
+	default "mypassword"
+
 source "Kconfig.zephyr"
