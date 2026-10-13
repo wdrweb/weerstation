@@ -6,6 +6,10 @@
             "type": "zephyr-ide-west",
             "request": "launch",
             "runner": "openocd",
+            "westExtraServerArgs": [
+                "--openocd",
+                "ABSOLUTE_PATH_TO/openocd.exe"
+            ],
             "runToEntryPoint": "main",
             "preLaunchCommands": [
                 "set breakpoint auto-hw on",
@@ -26,6 +30,10 @@
             "type": "zephyr-ide-west",
             "request": "attach",
             "runner": "openocd",
+            "westExtraServerArgs": [
+                "--openocd",
+                "ABSOLUTE_PATH_TO/openocd.exe"
+            ],
             "rtos": "Zephyr",
             "showDevDebugOutput": "raw",
             "svdFile": "ABSOLUTE_PATH_TO/esp32c6.svd"
@@ -33,7 +41,12 @@
         {
             "name": "Zephyr IDE: Debug (west debugserver)",
             "type": "zephyr-ide-west",
-            "request": "launch"
+            "request": "launch",
+            "runner": "openocd",
+            "westExtraServerArgs": [
+                "--openocd",
+                "ABSOLUTE_PATH_TO/openocd.exe"
+            ]
         }
     ]
 }

@@ -2,11 +2,17 @@
 #include <zephyr/kernel.h>
 #include "storage.h"
 #include "sensor_manager.h"
+#include "wifi_sta.h"
+#include "web_server.h"
 
 int main(void)
 {
 	SensorManager sensorManager;
 	static Storage storage;
+	WebServer webServer;
+
+	wifi_sta_connect();
+	webServer.start(&storage);
 
 	while (true)
 	{

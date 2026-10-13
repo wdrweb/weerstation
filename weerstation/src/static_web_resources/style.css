@@ -1,0 +1,49 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, Arial, sans-serif;
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 1.5rem;
+    background: #f0f4f8;
+    color: #333;
+}
+
+h1 {
+    font-size: 1.6rem;
+}
+
+h2 {
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+th,
+td {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid #cbd5e0;
+    text-align: right;
+}
+
+thead {
+    background: #e2e8f0;
+}
+
+#status {
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+input[type="number"] {
+    width: 4rem;
+    padding: 0.2rem 0.4rem;
+    font: inherit;
+}

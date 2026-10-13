@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weerstation</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="/main.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Weerstation</h1>
+    </header>
+    <main>
+        <p>Welkom bij het weerstation.</p>
+        <h2>Metingen</h2>
+        <p>
+            <label for="count">Aantal metingen:</label>
+            <input type="number" id="count" min="1" max="1440" value="10">
+        </p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Temperatuur (&deg;C)</th>
+                    <th>Luchtdruk (kPa)</th>
+                    <th>Vochtigheid (%)</th>
+                </tr>
+            </thead>
+            <tbody id="measurements"></tbody>
+        </table>
+        <p id="status">Metingen laden...</p>
+    </main>
+    <footer>
+        <p>&copy; 2024 Weerstation</p>
+    </footer>
+</body>
+</html>

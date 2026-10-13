@@ -2,7 +2,10 @@
 
 cmake_minimum_required(VERSION 3.20.0)
 
+set(DTC_OVERLAY_FILE ${CMAKE_CURRENT_SOURCE_DIR}/sensor.overlay CACHE STRING "" FORCE)
+
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(weerstation)
 
 target_sources(app PRIVATE src/main.cpp src/storage.cpp src/sensor_manager.cpp)
+target_compile_options(app PRIVATE -fpermissive)

@@ -3,6 +3,7 @@
 
 Storage::Storage()
 {
+	k_mutex_init(&lock);
 
 	int rc;
 	for (unsigned int i = 0; i < N_SECTORS; i++)
@@ -33,7 +34,18 @@ Storage::~Storage()
 	}
 }
 
+/* Shared by the main loop and the web server thread. */
 int Storage::write_storage(measurements *m)
+{
+	k_mutex_lock(&lock, K_FOREVER);
+	int rc = write_locked(m);
+
+	k_mutex_unlock(&lock);
+
+	return rc;
+}
+
+int Storage::write_locked(measurements *m)
 {
 	struct fcb_entry loc;
 	int rc;
@@ -67,6 +79,16 @@ int Storage::write_storage(measurements *m)
 }
 
 int Storage::read_last_n(std::vector<measurements> &measurementsVec, int n)
+{
+	k_mutex_lock(&lock, K_FOREVER);
+	int rc = read_last_n_locked(measurementsVec, n);
+
+	k_mutex_unlock(&lock);
+
+	return rc;
+}
+
+int Storage::read_last_n_locked(std::vector<measurements> &measurementsVec, int n)
 {
 	if (n <= 0)
 	{

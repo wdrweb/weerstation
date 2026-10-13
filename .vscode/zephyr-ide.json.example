@@ -12,9 +12,7 @@
           "westBuildArgs": [],
           "westBuildCMakeArgs": [
             "-DCONFIG_DEBUG_OPTIMIZATIONS=y",
-            "-DCONFIG_DEBUG_THREAD_INFO=y",
-            "-DOPENOCD=ABSOLUTE_PATH_TO/openocd-esp32/bin/openocd",
-            "-DOPENOCD_DEFAULT_PATH=ABSOLUTE_PATH_TO/openocd-esp32/share/openocd/scripts"
+            "-DCONFIG_DEBUG_THREAD_INFO=y"
           ],
           "confFiles": {
             "config": [],
