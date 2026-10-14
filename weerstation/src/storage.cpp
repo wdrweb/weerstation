@@ -115,35 +115,47 @@ int Storage::read_last_n_locked(std::vector<measurements> &measurementsVec, int 
 	}
 	else
 	{
-		// count the items in the fcb
-		struct fcb_entry scan = {0};
-		int total = 0;
-		while (fcb_getnext(&fcb, &scan) == 0)
-		{
-			total++;
-		}
-
-		if (total == 0)
-		{
-			return -ENOENT;
-		}
-
-		if (total < n)
-		{
-			n = total;
-		}
-		int skip = total - n;
-		measurementsVec.reserve(measurementsVec.size() + n);
-
-		// skip first items
 		struct fcb_entry loc = {0};
-		for (int i = 0; i < skip + 1; i++)
+
+		if (n <= UINT8_MAX)
 		{
-			if (fcb_getnext(&fcb, &loc) != 0)
+			int rc = fcb_offset_last_n(&fcb, (uint8_t)n, &loc);
+			if (rc)
+			{
+				return rc;
+			}
+		}
+		else
+		{
+			// count the items in the fcb
+			struct fcb_entry scan = {0};
+			int total = 0;
+			while (fcb_getnext(&fcb, &scan) == 0)
+			{
+				total++;
+			}
+
+			if (total == 0)
 			{
 				return -ENOENT;
 			}
+
+			if (total < n)
+			{
+				n = total;
+			}
+			int skip = total - n;
+
+			// skip first items
+			for (int i = 0; i < skip + 1; i++)
+			{
+				if (fcb_getnext(&fcb, &loc) != 0)
+				{
+					return -ENOENT;
+				}
+			}
 		}
+		measurementsVec.reserve(measurementsVec.size() + n);
 
 		// read the last n items
 		for (int i = 0; i < n; i++)

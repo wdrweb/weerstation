@@ -63,16 +63,12 @@ HTTP_RESOURCE_DEFINE(web_style_css, weerstation_web, "/style.css",
 		     &styleCssDetail);
 HTTP_RESOURCE_DEFINE(web_main_js, weerstation_web, "/main.js", &mainJsDetail);
 
-/* GET /api/measurements?n=<count>: the last n readings as JSON, oldest first.
- * The URL tail ("?n=10") arrives as request data on the first callback; later
- * chunks of a streamed reply get len 0. The server runs one client per dynamic
- * resource, so these statics are safe.
- */
+
 #define READ_DEFAULT_N 10
 /* The page's input max; the read vector takes ~17 kB of the ~55 kB heap. */
 #define READ_MAX_N 1440
-/* Beyond one full object (~180 B worst case), so snprintf never truncates. */
-#define CHUNK_RESERVE 192
+
+#define CHUNK_RESERVE 256
 
 static Storage *storage;
 static std::vector<measurements> read_result;
@@ -145,10 +141,11 @@ static int measurements_handler(struct http_client_ctx *client,
 		const measurements &m = read_result[read_index];
 
 		pos += snprintf(chunk_buf + pos, sizeof(chunk_buf) - pos,
-				"%s{\"temperature\":%.2f,\"pressure\":%.2f,\"humidity\":%.2f}",
+				"%s{\"temperature\":%.2f,\"pressure\":%.2f,\"humidity\":%.2f,"
+				"\"timestamp\":%llu}",
 				read_index > 0 ? "," : "",
 				(double)m.temperature, (double)m.pressure,
-				(double)m.humidity);
+				(double)m.humidity, (unsigned long long)m.timestamp);
 		read_index++;
 	}
 

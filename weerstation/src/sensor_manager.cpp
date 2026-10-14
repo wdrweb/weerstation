@@ -2,6 +2,8 @@
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/sensor.h>
 #include <zephyr/device.h>
+#include <zephyr/sys/clock.h>
+#include <time.h>
 
 const struct device *const sensortp = DEVICE_DT_GET(DT_ALIAS(sensortp));
 const struct device *const sensorth = DEVICE_DT_GET(DT_ALIAS(sensorth));
@@ -45,6 +47,18 @@ float SensorManager::get_channel(const struct device *sensor, enum sensor_channe
     return sensor_value_to_float(&value);
 }
 
+static uint64_t epoch_seconds()
+{
+    struct timespec now;
+
+    if (sys_clock_gettime(SYS_CLOCK_REALTIME, &now) != 0)
+    {
+        return 0;
+    }
+
+    return (uint64_t)now.tv_sec;
+}
+
 measurements SensorManager::get_measurements()
 {
     measurements m;
@@ -55,5 +69,6 @@ measurements SensorManager::get_measurements()
     m.pressure = this->get_channel(sensortp, SENSOR_CHAN_PRESS);
     m.humidity = this->get_channel(sensorth, SENSOR_CHAN_HUMIDITY);
     m.temperature = (temperature1 + temperature2) / 2.0f;
+    m.timestamp = epoch_seconds();
     return m;
 }
