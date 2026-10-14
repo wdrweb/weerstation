@@ -1,37 +1,117 @@
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weerstation</title>
-    <link rel="stylesheet" href="/style.css">
-    <script src="/main.js" defer></script>
+
+    <title>Mijn Weerstation</title>
+
+    <link rel="stylesheet" href="./style.css">
+    <script src="./main.js" defer></script>
 </head>
 <body>
+
     <header>
-        <h1>Weerstation</h1>
+        <h1>🌤️ Mijn Weerstation</h1>
+        <p>Bekijk de actuele weersomstandigheden</p>
     </header>
+
     <main>
-        <p>Welkom bij het weerstation.</p>
-        <h2>Metingen</h2>
-        <p>
-            <label for="count">Aantal metingen:</label>
-            <input type="number" id="count" min="1" max="1440" value="10">
-        </p>
-        <table>
-            <thead>
-                <tr>
-                    <th>Temperatuur (&deg;C)</th>
-                    <th>Luchtdruk (kPa)</th>
-                    <th>Vochtigheid (%)</th>
-                </tr>
-            </thead>
-            <tbody id="measurements"></tbody>
-        </table>
-        <p id="status">Metingen laden...</p>
+
+        <!-- Actuele metingen -->
+        <section>
+            <h2>Actuele metingen</h2>
+
+            <div class="metingen-container">
+
+                <div class="meting-kaart">
+                    <h3>🌡️ Temperatuur</h3>
+                    <p id="temperature">-- °C</p>
+                </div>
+
+                <div class="meting-kaart">
+                    <h3>💧 Luchtvochtigheid</h3>
+                    <p id="humidity">-- %</p>
+                </div>
+
+                <div class="meting-kaart">
+                    <h3>🌤️ Luchtdruk</h3>
+                    <p id="pressure">-- kPa</p>
+                </div>
+
+            </div>
+
+            <p class="kleine-tekst" id="lastMeasurement">
+                Nog geen metingen ontvangen
+            </p>
+        </section>
+
+        <!-- Grafieken -->
+        <section>
+            <h2>Verloop van de metingen</h2>
+            <p class="kleine-tekst">
+                De grafieken tonen de ontvangen metingen.
+            </p>
+
+            <div class="grafiek-container">
+                <h3>Temperatuur (°C)</h3>
+                <canvas id="temperatureChart"></canvas>
+            </div>
+
+            <div class="grafiek-container">
+                <h3>Luchtvochtigheid (%)</h3>
+                <canvas id="humidityChart"></canvas>
+            </div>
+
+            <div class="grafiek-container">
+                <h3>Luchtdruk (kPa)</h3>
+                <canvas id="pressureChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Meetgeschiedenis -->
+        <section>
+            <h2>Meetgeschiedenis</h2>
+
+            <div class="instellingen">
+                <label for="count">Aantal metingen:</label>
+                <input type="number" id="count"
+                       min="1" max="1440" value="10">
+
+                <button id="refreshButton">
+                    Vernieuwen
+                </button>
+            </div>
+
+            <div class="tabel-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tijd</th>
+                            <th>Temperatuur (°C)</th>
+                            <th>Vochtigheid (%)</th>
+                            <th>Luchtdruk (kPa)</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="measurements"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Verbindingsstatus -->
+        <section>
+            <h2>Verbindingsstatus</h2>
+            <p id="status">Metingen laden...</p>
+            <p class="kleine-tekst" id="updateTime"></p>
+        </section>
+
     </main>
+
     <footer>
-        <p>&copy; 2024 Weerstation</p>
+        <p>Weerstation - Project Technische Informatica</p>
     </footer>
+
 </body>
 </html>

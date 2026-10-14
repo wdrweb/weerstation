@@ -1,49 +1,190 @@
+
+/* Algemene opmaak */
 * {
     box-sizing: border-box;
 }
 
 body {
-    font-family: system-ui, Arial, sans-serif;
-    max-width: 40rem;
-    margin: 0 auto;
-    padding: 1.5rem;
-    background: #f0f4f8;
+    font-family: Arial, sans-serif;
+    background-color: #eef3f8;
     color: #333;
+    margin: 0;
 }
 
-h1 {
-    font-size: 1.6rem;
+/* Bovenkant */
+header {
+    background-color: #2764a5;
+    color: white;
+    text-align: center;
+    padding: 30px 15px;
+}
+
+header h1 {
+    margin: 0 0 10px;
+    font-size: 30px;
+}
+
+header p {
+    margin: 0;
+}
+
+/* Inhoud */
+main {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 15px;
+}
+
+section {
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 25px;
+    border-radius: 10px;
 }
 
 h2 {
-    font-size: 1.2rem;
-    margin-top: 1.5rem;
+    color: #2764a5;
+    margin-top: 5px;
+}
+
+.kleine-tekst {
+    color: #777;
+    font-size: 13px;
+    margin-top: 15px;
+}
+
+/* Meetkaarten */
+.metingen-container {
+    display: flex;
+    gap: 15px;
+}
+
+.meting-kaart {
+    background-color: #eaf3fc;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.meting-kaart h3 {
+    font-size: 16px;
+}
+
+.meting-kaart p {
+    font-size: 28px;
+    font-weight: bold;
+    color: #2764a5;
+    margin-bottom: 10px;
+}
+
+/* Grafieken */
+.grafiek-container {
+    background-color: #f7f9fc;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 8px;
+}
+
+.grafiek-container h3 {
+    font-size: 17px;
+    margin-top: 5px;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* Instellingen */
+.instellingen {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+input {
+    padding: 8px;
+    width: 80px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+button {
+    background-color: #2764a5;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    background-color: #194d82;
+}
+
+/* Meetgeschiedenis */
+.tabel-container {
+    overflow-x: auto;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    background: #fff;
 }
 
-th,
-td {
-    padding: 0.4rem 0.6rem;
-    border: 1px solid #cbd5e0;
-    text-align: right;
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
 }
 
-thead {
-    background: #e2e8f0;
+th {
+    background-color: #2764a5;
+    color: white;
 }
 
+tr:nth-child(even) {
+    background-color: #f2f6fa;
+}
+
+/* Verbindingsstatus */
 #status {
-    color: #64748b;
-    font-size: 0.9rem;
+    font-weight: bold;
+    color: #2764a5;
 }
 
-input[type="number"] {
-    width: 4rem;
-    padding: 0.2rem 0.4rem;
-    font: inherit;
+/* Onderkant */
+footer {
+    background-color: #2764a5;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Kleinere schermen */
+@media (max-width: 650px) {
+    .metingen-container {
+        flex-direction: column;
+    }
+
+    main {
+        margin: 10px;
+        padding: 5px;
+    }
+
+    section {
+        padding: 15px;
+    }
+
+    th, td {
+        padding: 7px;
+        font-size: 12px;
+    }
 }
