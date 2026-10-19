@@ -1,21 +1,25 @@
 
-const demo = new URLSearchParams(location.search).has("demo");
-const charts = {};
+const demo = new URLSearchParams(location.search).get("demo") === "1";
+const grafieken = {};
+let minuten = 15;
+let bezig = false;
 
 function tijd(t) {
     return new Date(t * 1000).toLocaleString("nl-NL");
 }
 
 function grafiek(id, data, naam, kleur) {
+    if (typeof Chart === "undefined") return;
+
     const labels = data.map(m => tijd(m.timestamp));
     const waarden = data.map(m => m[naam]);
 
-    if (charts[id]) {
-        charts[id].data.labels = labels;
-        charts[id].data.datasets[0].data = waarden;
-        charts[id].update();
+    if (grafieken[id]) {
+        grafieken[id].data.labels = labels;
+        grafieken[id].data.datasets[0].data = waarden;
+        grafieken[id].update("none");
     } else {
-        charts[id] = new Chart(document.getElementById(id), {
+        grafieken[id] = new Chart(document.getElementById(id), {
             type: "line",
             data: {
                 labels: labels,
@@ -47,29 +51,24 @@ function tonen(data) {
     document.getElementById("lastMeasurement").textContent =
         "Laatste meting: " + tijd(laatste.timestamp);
 
+    const vanaf = Date.now() / 1000 - minuten * 60;
+    const periode = data.filter(m => m.timestamp >= vanaf);
+
     const tabel = document.getElementById("history");
-    tabel.innerHTML = "";
+    tabel.replaceChildren();
 
-    data.slice().reverse().forEach(m => {
-        const rij = document.createElement("tr");
-
-        [
-            tijd(m.timestamp),
-            m.temperature.toFixed(1),
-            m.humidity.toFixed(1),
-            m.pressure.toFixed(1)
-        ].forEach(waarde => {
-            const cel = document.createElement("td");
-            cel.textContent = waarde;
-            rij.appendChild(cel);
-        });
-
-        tabel.appendChild(rij);
+    periode.slice().reverse().forEach(m => {
+        const rij = tabel.insertRow();
+        [tijd(m.timestamp), m.temperature.toFixed(1),
+         m.humidity.toFixed(1), m.pressure.toFixed(1)]
+        .forEach(waarde => rij.insertCell().textContent = waarde);
     });
 
-    grafiek("temperatureChart", data, "temperature", "red");
-    grafiek("humidityChart", data, "humidity", "blue");
-    grafiek("pressureChart", data, "pressure", "green");
+    grafiek("temperatureChart", periode, "temperature", "red");
+    grafiek("humidityChart", periode, "humidity", "blue");
+    grafiek("pressureChart", periode, "pressure", "green");
+
+    return periode.length;
 }
 
 function testData(aantal) {
@@ -88,20 +87,20 @@ function testData(aantal) {
 }
 
 async function laden() {
-    const invoer = document.getElementById("count");
-    let aantal = Number(invoer.value);
+    if (bezig) return;
+    bezig = true;
 
-    if (!Number.isInteger(aantal) || aantal < 1) aantal = 10;
-    if (aantal > 1440) aantal = 1440;
-    invoer.value = aantal;
+    const status = document.getElementById("status");
 
     try {
         let data;
 
         if (demo) {
-            data = testData(aantal);
+            data = testData(minuten + 1);
         } else {
-            const antwoord = await fetch("/api/measurements?n=" + aantal);
+            const antwoord = await fetch(
+                "/api/measurements?n=" + Math.min(minuten + 1, 1440)
+            );
             if (!antwoord.ok) throw new Error("HTTP " + antwoord.status);
             data = await antwoord.json();
         }
@@ -109,25 +108,39 @@ async function laden() {
         if (!Array.isArray(data)) throw new Error("Ongeldige gegevens");
 
         if (data.length === 0) {
-            document.getElementById("status").textContent =
-                "Nog geen metingen";
-            return;
+            status.textContent = "Nog geen metingen";
+        } else {
+            const aantal = tonen(data);
+            status.textContent = demo
+                ? "Teststand met voorbeeldmetingen"
+                : "Verbonden - " + new Date().toLocaleTimeString("nl-NL");
+
+            if (aantal === 0) status.textContent += " - Geen recente metingen";
+            if (typeof Chart === "undefined") {
+                status.textContent += " - Grafieken niet geladen";
+            }
         }
-
-        tonen(data);
-        document.getElementById("status").textContent =
-            demo ? "Teststand met voorbeeldmetingen" :
-            "Verbonden - bijgewerkt om " +
-            new Date().toLocaleTimeString("nl-NL");
-
     } catch (fout) {
-        document.getElementById("status").textContent =
-            "Fout bij ophalen: " + fout.message;
+        status.textContent = "Fout: " + fout.message;
+    } finally {
+        bezig = false;
     }
 }
 
+document.querySelectorAll(".periode").forEach(knop => {
+    knop.onclick = function() {
+        minuten = Number(knop.dataset.min);
+
+        document.querySelectorAll(".periode").forEach(k => {
+            k.classList.remove("actief");
+        });
+
+        knop.classList.add("actief");
+        laden();
+    };
+});
+
 document.getElementById("refresh").onclick = laden;
-document.getElementById("count").onchange = laden;
 
 laden();
 setInterval(laden, 5000);

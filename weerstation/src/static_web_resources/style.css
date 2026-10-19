@@ -30,17 +30,20 @@ h2 {
     color: #2764a5;
 }
 
-.metingen {
+.metingen, .knoppen {
     display: flex;
-    gap: 15px;
+    gap: 10px;
+}
+
+.metingen {
     text-align: center;
 }
 
 .metingen div {
     flex: 1;
     background: #eaf3fc;
-    border-radius: 10px;
     padding: 15px;
+    border-radius: 10px;
 }
 
 .metingen p {
@@ -52,6 +55,23 @@ h2 {
 canvas {
     max-height: 250px;
     margin-bottom: 30px;
+}
+
+.knoppen {
+    flex-wrap: wrap;
+}
+
+button {
+    background: #2764a5;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover, .actief {
+    background: #163e69;
 }
 
 .tabel {
@@ -77,18 +97,6 @@ th {
 
 tr:nth-child(even) {
     background: #f2f6fa;
-}
-
-input, button {
-    padding: 8px;
-    margin: 5px;
-}
-
-button {
-    background: #2764a5;
-    color: white;
-    border: none;
-    cursor: pointer;
 }
 
 small {
