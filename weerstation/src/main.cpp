@@ -9,6 +9,8 @@
 #include "sensor_manager.h"
 #include "wifi_sta.h"
 #include "web_server.h"
+#include <zephyr/sys/clock.h>
+
 
 //ntp servers
 static const char *const timeServers[] = {
@@ -48,6 +50,15 @@ static void sync_clock(void)
 	}
 }
 
+
+static int64_t ms_to_next_minute(void)
+{
+	struct timespec ts;
+	sys_clock_gettime(SYS_CLOCK_REALTIME, &ts);
+	int64_t ms = (ts.tv_sec % 60) * 1000 + ts.tv_nsec / 1000000;
+	return ms == 0 ? 0 : 60000 - ms;
+}
+
 int main(void)
 {
 	SensorManager sensorManager;
@@ -57,22 +68,14 @@ int main(void)
 	wifi_sta_connect();
 	webServer.start(&storage);
 	sync_clock(); // blocks until clock is synced to prevent incorrect timestamps. 
+	static struct k_timer ticker;
+	k_timer_init(&ticker, NULL, NULL);
+	k_timer_start(&ticker, K_MSEC(ms_to_next_minute()), K_SECONDS(60));
 	while (true)
-	{
+	{	
+		k_timer_status_sync(&ticker);
 		measurements m = sensorManager.get_measurements();
 		storage.write_storage(&m);
-
-		// just for testing
-		static std::vector<measurements> measurements;
-		measurements.clear();
-		storage.read_last_n(measurements, 5);
-		for (const auto &measurement : measurements)
-		{
-			printk("Temperature: %f, Pressure: %f, Humidity: %f\n",
-				   measurement.temperature, measurement.pressure, measurement.humidity);
-		}
-		printk("\n");
-		k_sleep(K_SECONDS(60));
 	}
 	return 0;
 }

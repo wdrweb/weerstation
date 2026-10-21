@@ -157,6 +157,9 @@ int Storage::read_last_n_locked(std::vector<measurements> &measurementsVec, int 
 		}
 		measurementsVec.reserve(measurementsVec.size() + n);
 
+		// fill the cache so next time is faster
+		int collected = 0;
+
 		// read the last n items
 		for (int i = 0; i < n; i++)
 		{
@@ -165,9 +168,13 @@ int Storage::read_last_n_locked(std::vector<measurements> &measurementsVec, int 
 			if (rc)
 			{
 				printk("flash_area_read failed: %d\n", rc);
+				cache_count = 0;
 				return rc;
 			}
 			measurementsVec.push_back(m);
+
+			cache[collected % CACHE_N] = loc;
+			collected++;
 
 			if (fcb_getnext(&fcb, &loc))
 			{
@@ -175,6 +182,10 @@ int Storage::read_last_n_locked(std::vector<measurements> &measurementsVec, int 
 				break;
 			}
 		}
+
+		cache_count = MIN(collected, CACHE_N);
+		cache_head = collected % CACHE_N;
+
 		return 0;
 	}
 }

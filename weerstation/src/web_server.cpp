@@ -112,6 +112,12 @@ static int measurements_handler(struct http_client_ctx *client,
 		return 0;
 	}
 
+	if (status == HTTP_SERVER_TRANSACTION_COMPLETE) {
+		read_result.clear();
+		read_active = false;
+		return 0;
+	}
+
 	if (status != HTTP_SERVER_REQUEST_DATA_FINAL) {
 		return 0;
 	}

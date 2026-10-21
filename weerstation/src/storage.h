@@ -9,7 +9,8 @@
 #define SECTOR_SZ 4096u
 #define N_SECTORS 48u
 #define FCB_AREA PARTITION_ID(storage_partition)
-#define CACHE_N 15
+// one hour cached
+#define CACHE_N 61
 
 class Storage
 {

@@ -6,6 +6,17 @@
 
 #define HAS_PSK (sizeof(CONFIG_WIFI_PSK) > 1)
 
+static void disable_power_save(struct net_if *iface)
+{
+	struct wifi_ps_params params = {
+		.enabled = WIFI_PS_DISABLED,
+		.type = WIFI_PS_PARAM_STATE,
+	};
+	int rc = net_mgmt(NET_REQUEST_WIFI_PS, iface, &params, sizeof(params));
+
+	printk("Wi-Fi power save %s (%d)\n", rc == 0 ? "disabled" : "not disabled", rc);
+}
+
 int wifi_sta_connect(void)
 {
 	struct net_if *iface = net_if_get_wifi_sta();
@@ -16,13 +27,14 @@ int wifi_sta_connect(void)
 		.psk = HAS_PSK ? (const uint8_t *)CONFIG_WIFI_PSK : NULL,
 		.psk_length = HAS_PSK ? sizeof(CONFIG_WIFI_PSK) - 1 : 0,
 		.security = HAS_PSK ? WIFI_SECURITY_TYPE_PSK
-				    : WIFI_SECURITY_TYPE_NONE,
+							: WIFI_SECURITY_TYPE_NONE,
 		.channel = WIFI_CHANNEL_ANY,
 		.band = WIFI_FREQ_BAND_2_4_GHZ,
 	};
 	int rc;
 
-	if (iface == NULL) {
+	if (iface == NULL)
+	{
 		printk("no Wi-Fi station interface\n");
 		return -1;
 	}
@@ -30,5 +42,9 @@ int wifi_sta_connect(void)
 	rc = net_mgmt(NET_REQUEST_WIFI_CONNECT, iface, &params, sizeof(params));
 	printk("Wi-Fi connect request -> %d\n", rc);
 
+	if (rc == 0)
+	{
+		disable_power_save(iface);
+	}
 	return rc;
 }
