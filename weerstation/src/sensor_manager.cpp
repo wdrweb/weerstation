@@ -64,11 +64,10 @@ measurements SensorManager::get_measurements()
     measurements m;
     this->fetch_sample(sensortp);
     this->fetch_sample(sensorth);
-    float temperature1 = this->get_channel(sensortp, SENSOR_CHAN_AMBIENT_TEMP);
-    float temperature2 = this->get_channel(sensorth, SENSOR_CHAN_AMBIENT_TEMP);
     m.pressure = this->get_channel(sensortp, SENSOR_CHAN_PRESS);
     m.humidity = this->get_channel(sensorth, SENSOR_CHAN_HUMIDITY);
-    m.temperature = (temperature1 + temperature2) / 2.0f;
+    //bmp280 temp not used as it is inaccurate
+    m.temperature = this->get_channel(sensorth, SENSOR_CHAN_AMBIENT_TEMP);
     m.timestamp = epoch_seconds();
     return m;
 }
