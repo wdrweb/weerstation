@@ -9,6 +9,7 @@
 #include "sensor_manager.h"
 #include "wifi_sta.h"
 #include "web_server.h"
+#include "status_led.h"
 #include <zephyr/sys/clock.h>
 
 
@@ -21,7 +22,7 @@ static const char *const timeServers[] = {
 #define CLOCK_SYNC_RETRY_DELAY_SEC 30
 
 
-static void sync_clock(void)
+static void sync_clock(bool station_ok)
 {
 	struct sntp_time server_time;
 	size_t server = 0;
@@ -42,9 +43,11 @@ static void sync_clock(void)
 			};
 			if (sys_clock_settime(SYS_CLOCK_REALTIME, &time) == 0)
 			{
+				status_set_station(station_ok ? STATION_SERVING : STATION_ERROR);
 				return;
 			}
 		}
+		status_set_station(STATION_ERROR);
 		server = (server + 1) % ARRAY_SIZE(timeServers);
 		k_sleep(K_SECONDS(CLOCK_SYNC_RETRY_DELAY_SEC));
 	}
@@ -66,16 +69,20 @@ int main(void)
 	WebServer webServer;
 
 	wifi_sta_connect();
-	webServer.start(&storage);
-	sync_clock(); // blocks until clock is synced to prevent incorrect timestamps. 
+	int rc = webServer.start(&storage);
+	bool ok = sensorManager.is_ready() && rc == 0;
+	status_set_station(ok ? STATION_SERVING : STATION_ERROR);
+
+	sync_clock(ok); // blocks until clock is synced to prevent incorrect timestamps.
 	static struct k_timer ticker;
 	k_timer_init(&ticker, NULL, NULL);
 	k_timer_start(&ticker, K_MSEC(ms_to_next_minute()), K_SECONDS(60));
 	while (true)
-	{	
+	{
 		k_timer_status_sync(&ticker);
 		measurements m = sensorManager.get_measurements();
-		storage.write_storage(&m);
+		ok = storage.write_storage(&m) == 0 && sensorManager.is_ready();
+		status_set_station(ok ? STATION_SERVING : STATION_ERROR);
 	}
 	return 0;
 }

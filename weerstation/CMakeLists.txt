@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.20.0)
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(weerstation)
 
-target_sources(app PRIVATE src/main.cpp src/storage.cpp src/sensor_manager.cpp src/web_server.cpp src/wifi_sta.c)
+target_sources(app PRIVATE src/main.cpp src/storage.cpp src/sensor_manager.cpp src/web_server.cpp src/status_led.cpp src/wifi_sta.c)
 
 zephyr_linker_sources(SECTIONS src/sections-rom.ld)
 

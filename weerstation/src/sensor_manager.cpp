@@ -10,16 +10,10 @@ const struct device *const sensorth = DEVICE_DT_GET(DT_ALIAS(sensorth));
 
 SensorManager::SensorManager()
 {
-    // check if the sensor is ready
-    if (!device_is_ready(sensortp))
+    ready = device_is_ready(sensortp) && device_is_ready(sensorth);
+    if (!ready)
     {
         printk("Sensor device not ready\n");
-        return;
-    }
-    if (!device_is_ready(sensorth))
-    {
-        printk("Sensor device not ready\n");
-        return;
     }
 }
 

@@ -1,0 +1,55 @@
+#include <zephyr/dt-bindings/led/led.h>
+
+/ {
+    chosen {};
+
+    aliases {
+        sensortp = &bmp280;
+        sensorth = &si7021;
+        led-strip = &led_strip;
+    };
+};
+
+&i2c0 {
+    status = "okay";
+    clock-frequency = <I2C_BITRATE_STANDARD>;
+
+    bmp280: bmp280@76 {
+        compatible = "bosch,bme280";
+        reg = <0x76>;
+        status = "okay";
+    };
+
+    si7021: si7021@40 {
+        compatible = "silabs,si7006";
+        reg = <0x40>;
+        status = "okay";
+    };
+};
+
+&i2s_default {
+    group1 {
+        pinmux = <I2S_O_SD_GPIO8>;
+    };
+};
+
+i2s_led: &i2s {
+    status = "okay";
+
+    dmas = <&dma 3>;
+    dma-names = "tx";
+
+    led_strip: ws2812@0 {
+        compatible = "worldsemi,ws2812-i2s";
+        reg = <0>;
+        chain-length = <1>;
+        color-mapping = <LED_COLOR_ID_GREEN
+                         LED_COLOR_ID_RED
+                         LED_COLOR_ID_BLUE>;
+        reset-delay = <500>;
+    };
+};
+
+&dma {
+    status = "okay";
+};

@@ -16,7 +16,9 @@ public:
 	void fetch_sample(const struct device *sensor);
 	float get_channel(const struct device *sensor, enum sensor_channel channel);
 	measurements get_measurements();
+	bool is_ready() const { return ready; }
 	
 
 private:
+	bool ready = true;
 };
