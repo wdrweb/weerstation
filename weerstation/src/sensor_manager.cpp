@@ -41,12 +41,18 @@ float SensorManager::get_channel(const struct device *sensor, enum sensor_channe
     return sensor_value_to_float(&value);
 }
 
-static uint64_t epoch_seconds()
+//before SNTP runs the realtime offset is zero, so this is just uptime
+static uint64_t clock_seconds(bool *relative)
 {
+    struct timespec offset;
     struct timespec now;
+
+    sys_clock_getrtoffset(&offset);
+    *relative = offset.tv_sec == 0 && offset.tv_nsec == 0;
 
     if (sys_clock_gettime(SYS_CLOCK_REALTIME, &now) != 0)
     {
+        *relative = true;
         return 0;
     }
 
@@ -62,6 +68,8 @@ measurements SensorManager::get_measurements()
     m.humidity = this->get_channel(sensorth, SENSOR_CHAN_HUMIDITY);
     //bmp280 temp not used as it is inaccurate
     m.temperature = this->get_channel(sensorth, SENSOR_CHAN_AMBIENT_TEMP);
-    m.timestamp = epoch_seconds();
+    bool relative;
+    m.timestamp = clock_seconds(&relative);
+    m.relative = relative ? 1 : 0;
     return m;
 }
