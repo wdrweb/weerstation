@@ -9,9 +9,11 @@
 static const struct device *const strip = DEVICE_DT_GET(DT_ALIAS(led_strip));
 static atomic_t wifi_state = ATOMIC_INIT(WIFI_IDLE);
 static atomic_t station_state = ATOMIC_INIT(STATION_BOOT);
+static atomic_t time_synced = ATOMIC_INIT(0);
 
 void status_set_wifi(enum wifi_state state)
 {
+    // Latch the error 
     if (state == WIFI_DOWN && atomic_get(&wifi_state) == WIFI_ERROR) {
         return;
     }
@@ -21,6 +23,11 @@ void status_set_wifi(enum wifi_state state)
 void status_set_station(enum station_state state)
 {
     atomic_set(&station_state, state);
+}
+
+void status_set_time_synced(bool synced)
+{
+    atomic_set(&time_synced, synced ? 1 : 0);
 }
 
 static struct led_rgb rgb(uint8_t r, uint8_t g, uint8_t b)
@@ -40,23 +47,15 @@ static struct led_rgb wanted(void)
     bool lit = k_uptime_get() / BLINK_MS % 2 == 0;
 
     if (station == STATION_ERROR || wifi == WIFI_ERROR) {
-        return rgb(0x30, 0, 0);
+        return rgb(0x30, 0, 0); //red: error 
     }
-    if (wifi == WIFI_CONNECTING) {
-        return rgb(lit ? 0x30 : 0, lit ? 0x18 : 0, 0);
+    if (wifi != WIFI_CONNECTED || !atomic_get(&time_synced)) {
+        return rgb(lit ? 0x30 : 0, lit ? 0x18 : 0, 0);   //yellow blink: no link or no time sync
     }
-    if (wifi == WIFI_DOWN) {
-        return rgb(lit ? 0x30 : 0, lit ? 0x08 : 0, 0);
-    }
-    if (station == STATION_BOOT) {
-        return rgb(0x10, 0x10, 0x10);
-    }
-    if (station == STATION_SERVING) {
-        return wifi == WIFI_CONNECTED ? rgb(0, 0x20, 0) : rgb(0, 0, 0x20);
-    }
-    return rgb(0x20, 0, 0x20);
+    return rgb(0, 0x20, 0); // green: serving with a link
 }
 
+// Renders four times per blink period repainting only on change to avoid needless I2S transfers. 
 static void status_led_thread(void *, void *, void *)
 {
     const bool ready = device_is_ready(strip);
@@ -76,4 +75,5 @@ static void status_led_thread(void *, void *, void *)
     }
 }
 
+// Start the status LED thread with a higher priority than the main thread so status is always shown
 K_THREAD_DEFINE(status_led_tid, 1024, status_led_thread, NULL, NULL, NULL, 7, 0, 0);

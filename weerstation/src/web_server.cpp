@@ -148,10 +148,11 @@ static int measurements_handler(struct http_client_ctx *client,
 
 		pos += snprintf(chunk_buf + pos, sizeof(chunk_buf) - pos,
 				"%s{\"temperature\":%.2f,\"pressure\":%.2f,\"humidity\":%.2f,"
-				"\"timestamp\":%llu}",
+				"\"relative\":%u,\"timestamp\":%llu}",
 				read_index > 0 ? "," : "",
 				(double)m.temperature, (double)m.pressure,
-				(double)m.humidity, (unsigned long long)m.timestamp);
+				(double)m.humidity, (unsigned int)m.relative,
+				(unsigned long long)m.timestamp);
 		read_index++;
 	}
 

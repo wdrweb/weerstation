@@ -27,6 +27,7 @@
     };
 };
 
+/* LED strip */
 &i2s_default {
     group1 {
         pinmux = <I2S_O_SD_GPIO8>;
