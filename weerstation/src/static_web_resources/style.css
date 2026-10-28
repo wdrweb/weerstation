@@ -99,6 +99,10 @@ tr:nth-child(even) {
     background: #f2f6fa;
 }
 
+tr.relatief td {
+    color: #888;
+}
+
 small {
     color: gray;
 }

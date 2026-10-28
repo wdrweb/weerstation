@@ -7,6 +7,8 @@
     <title>Weerstation</title>
     <link rel="stylesheet" href="./style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.2.0/dist/chartjs-plugin-zoom.min.js"></script>
     <script src="./main.js" defer></script>
 </head>
 <body>
@@ -28,6 +30,7 @@
 
         <section>
             <h2>Grafieken</h2>
+            <p><small>Sleep om te pannen, scroll om te zoomen.</small></p>
             <h3>Temperatuur</h3>
             <canvas id="temperatureChart"></canvas>
             <h3>Luchtvochtigheid</h3>
@@ -43,6 +46,7 @@
                 <button class="periode" data-min="60">1 uur</button>
                 <button class="periode" data-min="360">6 uur</button>
                 <button class="periode" data-min="1440">24 uur</button>
+                <button id="resetZoom">Zoom herstellen</button>
                 <button id="refresh">Vernieuwen</button>
             </div>
 
