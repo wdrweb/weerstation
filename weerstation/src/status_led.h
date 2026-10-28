@@ -1,4 +1,5 @@
 #pragma once
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,6 +21,7 @@ enum station_state {
 
 void status_set_wifi(enum wifi_state state);
 void status_set_station(enum station_state state);
+void status_set_time_synced(bool synced);
 
 #ifdef __cplusplus
 }

@@ -70,6 +70,7 @@ static void sync_clock_thread(void *, void *, void *)
 			if (set_rc == 0)
 			{
 				printk("Clock synced from %s\n", timeServers[server]);
+				status_set_time_synced(true);
 				server = 0;
 				k_sleep(K_SECONDS(CLOCK_RESYNC_INTERVAL_SEC));
 				continue;
