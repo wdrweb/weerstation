@@ -19,6 +19,17 @@ static const uint8_t mainJsData[] = {
 #include "main.js.inc"
 };
 
+static const uint8_t chartJsData[] = {
+#include "chart.umd.min.js.inc"
+};
+
+static const uint8_t hammerJsData[] = {
+#include "hammer.min.js.inc"
+};
+
+static const uint8_t zoomPluginJsData[] = {
+#include "chartjs-plugin-zoom.min.js.inc"
+};
 
 static struct http_resource_detail_static indexHtmlDetail = {
 	.common = {
@@ -50,6 +61,36 @@ static struct http_resource_detail_static mainJsDetail = {
 	.static_data_len = sizeof(mainJsData),
 };
 
+static struct http_resource_detail_static chartJsDetail = {
+	.common = {
+		.bitmask_of_supported_http_methods = BIT(HTTP_GET),
+		.type = HTTP_RESOURCE_TYPE_STATIC,
+		.content_type = "text/javascript",
+	},
+	.static_data = chartJsData,
+	.static_data_len = sizeof(chartJsData),
+};
+
+static struct http_resource_detail_static hammerJsDetail = {
+	.common = {
+		.bitmask_of_supported_http_methods = BIT(HTTP_GET),
+		.type = HTTP_RESOURCE_TYPE_STATIC,
+		.content_type = "text/javascript",
+	},
+	.static_data = hammerJsData,
+	.static_data_len = sizeof(hammerJsData),
+};
+
+static struct http_resource_detail_static zoomPluginJsDetail = {
+	.common = {
+		.bitmask_of_supported_http_methods = BIT(HTTP_GET),
+		.type = HTTP_RESOURCE_TYPE_STATIC,
+		.content_type = "text/javascript",
+	},
+	.static_data = zoomPluginJsData,
+	.static_data_len = sizeof(zoomPluginJsData),
+};
+
 static uint16_t web_server_port = 80;
 
 HTTP_SERVICE_DEFINE(weerstation_web, NULL, &web_server_port,
@@ -62,6 +103,12 @@ HTTP_RESOURCE_DEFINE(web_index_file, weerstation_web, "/index.html",
 HTTP_RESOURCE_DEFINE(web_style_css, weerstation_web, "/style.css",
 		     &styleCssDetail);
 HTTP_RESOURCE_DEFINE(web_main_js, weerstation_web, "/main.js", &mainJsDetail);
+HTTP_RESOURCE_DEFINE(web_chart_js, weerstation_web, "/chart.umd.min.js",
+		     &chartJsDetail);
+HTTP_RESOURCE_DEFINE(web_hammer_js, weerstation_web, "/hammer.min.js",
+		     &hammerJsDetail);
+HTTP_RESOURCE_DEFINE(web_zoom_plugin_js, weerstation_web,
+		     "/chartjs-plugin-zoom.min.js", &zoomPluginJsDetail);
 
 
 #define READ_DEFAULT_N 10

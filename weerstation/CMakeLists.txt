@@ -11,7 +11,7 @@ zephyr_linker_sources(SECTIONS src/sections-rom.ld)
 
 set(web_resource_dir src/static_web_resources)
 set(gen_dir ${ZEPHYR_BINARY_DIR}/include/generated/)
-foreach(web_resource index.html style.css main.js)
+foreach(web_resource index.html style.css main.js chart.umd.min.js hammer.min.js chartjs-plugin-zoom.min.js)
   generate_inc_file_for_target(app
     ${web_resource_dir}/${web_resource}
     ${gen_dir}/${web_resource}.inc)
