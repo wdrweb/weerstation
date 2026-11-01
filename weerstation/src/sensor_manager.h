@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include <zephyr/device.h>
@@ -10,15 +11,14 @@ extern const struct device *const sensorth;
 class SensorManager
 {
 public:
-	SensorManager();
-	~SensorManager();
-	//float read_sensor(const struct device *sensor, enum sensor_channel channel);
-	void fetch_sample(const struct device *sensor);
-	float get_channel(const struct device *sensor, enum sensor_channel channel);
-	measurements get_measurements();
-	bool is_ready() const { return ready; }
-	
+    SensorManager();
+
+    void fetch_sample(const struct device *sensor);
+    float get_channel(const struct device *sensor, enum sensor_channel channel);
+    measurements get_measurements();
+
+    bool is_ready() const { return ready; }
 
 private:
-	bool ready = true;
+    bool ready = true;
 };
